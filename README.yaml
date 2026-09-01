@@ -1,0 +1,98 @@
+---
+#
+# This is the canonical configuration for `README.md`.
+# Run `make docs` for the terraform-docs block, the readme workflow rebuilds the rest.
+#
+
+name: Terraform Cloudflare Module Template
+
+intro: |-
+  With our comprehensive DevOps toolkit, streamline operations, automate workflows, enhance collaboration and deploy with confidence.
+
+badges_text: "Latest Release | License | Changelog"
+
+about: |-
+  Baseline template for every Terraform module in the terraform-cf-modules organisation.
+
+license: "APACHE"
+
+github_repo: terraform-cf-modules/terraform-module-template
+
+badges:
+  - name: "Terraform"
+    image: "https://img.shields.io/badge/Terraform-v1.10.0-green"
+    url: "https://www.terraform.io"
+
+  - name: "Licence"
+    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
+    url: "LICENSE"
+
+  - name: "Changelog"
+    image: "https://img.shields.io/badge/Changelog-blue"
+    url: "CHANGELOG.md"
+
+prerequisites:
+  - name: Terraform
+    url: https://learn.hashicorp.com/terraform/getting-started/install.html
+    version: ">= 1.10.0"
+
+  - name: OpenTofu
+    url: https://opentofu.org/docs/intro/install/
+    version: ">= 1.9.0"
+
+providers:
+  - name: cloudflare
+    url: https://registry.terraform.io/providers/cloudflare/cloudflare/latest
+    version: "~> 5.24"
+
+description: |-
+  Baseline template for every Terraform module in the terraform-cf-modules organisation.
+
+  Copy this repository with the GitHub `Use this template` button, then replace the `{{MODULE_NAME}}`,
+  `{{MODULE_DESCRIPTION}}` and `{{MODULE_REGISTRY_NAME}}` placeholders.
+
+  Every module here targets Cloudflare provider v5. Cloudflare rewrote the provider from its OpenAPI spec in
+  v5.0.0 and renamed most resources, so verify resource names and attributes against the current provider
+  documentation rather than from memory or from older examples.
+
+usage: |-
+  ### Root module
+
+  ```hcl
+  module "example" {
+    source  = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare"
+    version = "~> 0.1"
+
+    enabled    = true
+    account_id = var.account_id
+  }
+  ```
+
+  ### Submodule
+
+  ```hcl
+  module "piece" {
+    source  = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare//modules/example"
+    version = "~> 0.1"
+
+    enabled = true
+    zone_id = var.zone_id
+  }
+  ```
+
+  ### Wrapper for many instances
+
+  ```hcl
+  module "many" {
+    source = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare//wrappers"
+
+    defaults = {
+      account_id = var.account_id
+    }
+
+    items = {
+      first  = { zone_id = var.zone_a }
+      second = { zone_id = var.zone_b }
+    }
+  }
+  ```
