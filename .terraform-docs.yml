@@ -1,12 +1,17 @@
+# Root module: inputs and outputs are published to docs/io.md, matching the
+# CloudDrove house layout. README.md itself is rendered from README.yaml.
 formatter: markdown table
 
 output:
-  file: README.md
-  mode: inject
+  file: docs/io.md
+  mode: replace
   template: |-
-    <!-- BEGIN_TF_DOCS -->
     {{ .Content }}
-    <!-- END_TF_DOCS -->
+
+sections:
+  show:
+    - inputs
+    - outputs
 
 sort:
   enabled: true

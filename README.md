@@ -1,150 +1,175 @@
+<!-- This file was automatically generated from `README.yaml`. Make all changes to `README.yaml` and run `make readme` to rebuild this file. -->
 <p align="center">
-  <img width="1000" alt="CloudDrove Banner" src="https://clouddrove.s3.ca-central-1.amazonaws.com/img/clouddrove-github-cover.png" />
+  <img width="1024" height="250" alt="CloudDrove" src="https://clouddrove.s3.ca-central-1.amazonaws.com/Logo/banner.png" />
+</p>
+<h1 align="center">
+    Terraform Cloudflare Module Template
+</h1>
+
+<p align="center" style="font-size: 1.2rem;">
+    With our comprehensive DevOps toolkit, streamline operations, automate workflows, enhance collaboration and deploy with confidence.
 </p>
 
-<h1 align="center">Terraform Cloudflare Module Template</h1>
-<p align="center"><em>Baseline for every module in the terraform-cf-modules organisation.</em></p>
-
 <p align="center">
-  <a href="https://www.terraform.io"><img src="https://img.shields.io/badge/terraform-%3E%3D%201.12-844FBA?logo=terraform&logoColor=white" alt="Terraform" /></a>
-  <a href="https://opentofu.org"><img src="https://img.shields.io/badge/opentofu-%3E%3D%201.12-FFDA18?logo=opentofu&logoColor=black" alt="OpenTofu" /></a>
-  <a href="https://registry.terraform.io/providers/cloudflare/cloudflare/latest"><img src="https://img.shields.io/badge/provider-cloudflare%20~%3E%205.24-F38020?logo=cloudflare&logoColor=white" alt="Cloudflare Provider" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License" /></a>
+
+<a href="https://www.terraform.io">
+  <img src="https://img.shields.io/badge/Terraform-v1.12.0-green" alt="Terraform">
+</a>
+<a href="LICENSE">
+  <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
+</a>
+<a href="CHANGELOG.md">
+  <img src="https://img.shields.io/badge/Changelog-blue" alt="Changelog">
+</a>
+<a href="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/tf-checks.yml">
+  <img src="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/tf-checks.yml/badge.svg" alt="tf-checks">
+</a>
+<a href="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/tflint.yml">
+  <img src="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/tflint.yml/badge.svg" alt="tf-lint">
+</a>
+<a href="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/checkov.yml">
+  <img src="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/checkov.yml/badge.svg" alt="checkov">
+</a>
+<a href="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/test.yml">
+  <img src="https://github.com/terraform-cf-modules/terraform-module-template/actions/workflows/test.yml/badge.svg" alt="test">
+</a>
+
 </p>
+<hr>
+
+
+Baseline template for every Terraform module in the terraform-cf-modules organisation.
+
+Copy this repository with the GitHub `Use this template` button, then replace the `{{MODULE_NAME}}`,
+`{{MODULE_DESCRIPTION}}` and `{{MODULE_REGISTRY_NAME}}` placeholders.
+
+Every module here targets Cloudflare provider v5. Cloudflare rewrote the provider from its OpenAPI spec in
+v5.0.0 and renamed most resources, so verify resource names and attributes against the current provider
+documentation rather than from memory or from older examples.
+
+
+## Prerequisites and Providers
+
+This table contains both Prerequisites and Providers:
+
+| Description | Name | Version |
+|-------------|------|---------|
+| Prerequisite | Terraform | >= 1.12.0 |
+| Prerequisite | OpenTofu | >= 1.12.0 |
+| Provider | cloudflare | ~> 5.24 |
 
 ---
 
-## Using this template
 
-1. Click **Use this template** on GitHub and name the new repository `terraform-cloudflare-<name>`.
+## 🚀 Usage
 
-   The repository name matters. The Terraform Registry parses `terraform-<PROVIDER>-<NAME>`, and the provider
-   segment becomes the module address. `terraform-cloudflare-workers` publishes as
-   `terraform-cf-modules/workers/cloudflare`. A repository named `terraform-cf-workers` would publish as
-   `.../workers/cf`, which is wrong and undiscoverable.
+### Root module
 
-2. Replace the placeholders across the repository:
+```hcl
+module "example" {
+  source  = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare"
+  version = "~> 0.1"
 
-   | Placeholder | Example |
-   |-------------|---------|
-   | `{{MODULE_NAME}}` | `Cloudflare Workers` |
-   | `{{MODULE_REGISTRY_NAME}}` | `workers` |
-   | `{{MODULE_DESCRIPTION}}` | `Workers, routes, cron triggers, and storage bindings.` |
-
-   ```bash
-   grep -rl '{{MODULE_' . --exclude-dir=.git | xargs sed -i '' \
-     -e 's/{{MODULE_NAME}}/Cloudflare Workers/g' \
-     -e 's/{{MODULE_REGISTRY_NAME}}/workers/g'
-   ```
-
-3. Build the root module in `main.tf`, the building blocks under `modules/`, and delete `modules/example`.
-4. Write `examples/basic` and `examples/complete`, plus a feature specific example for anything non obvious.
-5. Run `make ci`, commit with a Conventional Commit title, and open a pull request.
-
----
-
-## Repository layout
-
-```
-terraform.tf          provider and version requirements
-main.tf               root module resources
-variables.tf          root module inputs
-outputs.tf            root module outputs
-locals.tf             locals
-modules/<name>/       composable building blocks, same file layout
-examples/basic/       minimum viable example
-examples/complete/    every optional feature turned on
-wrappers/             for_each wrapper for many instances
-tests/                native terraform test files
-docs/                 architecture notes and provider migration guides
+  enabled    = true
+  account_id = var.account_id
+}
 ```
 
----
+### Submodule
 
-## The rules
+```hcl
+module "piece" {
+  source  = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare//modules/example"
+  version = "~> 0.1"
 
-Full detail lives in the [organisation contributing guide](https://github.com/terraform-cf-modules/.github/blob/main/CONTRIBUTING.md).
-The short version:
-
-- **Product scoped, not resource scoped.** One module maps to a Cloudflare product area. Single resource wrappers
-  are not published here.
-- **Provider v5 only.** Verify every resource and attribute against the
-  [current provider docs](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs). Cloudflare
-  renamed most resources in v5.0.0, and older examples (including anything an AI assistant recalls from training
-  data) are frequently wrong.
-- **`enabled` everywhere**, honoured on every resource.
-- **Maps of objects, never lists.** A list reorder destroys and recreates resources. Use `optional()` inside the
-  object type and default the map to `{}`.
-- **`validation` blocks on every enum.**
-- **No `provider` block inside a module.** Authentication belongs to the caller.
-- **No credentials as inputs.** Secret outputs are marked `sensitive`.
-- **No tagging or labelling convention.** Cloudflare has no general tag surface, so there is deliberately no
-  labels module here.
-
----
-
-## Local development
-
-```bash
-pre-commit install
-
-make fmt        # terraform fmt -recursive
-make validate   # init and validate every directory
-make lint       # tflint
-make docs       # regenerate the terraform-docs blocks
-make test       # mocked terraform test, no credentials needed
-make security   # trivy, checkov, gitleaks
-make ci         # all of the above
+  enabled = true
+  zone_id = var.zone_id
+}
 ```
 
-`make test` runs against `mock_provider`, so it needs no Cloudflare credentials. The live tests in
-`tests/integration.tftest.hcl` run only on schedule and manual dispatch.
+### Wrapper for many instances
+
+```hcl
+module "many" {
+  source = "terraform-cf-modules/{{MODULE_REGISTRY_NAME}}/cloudflare//wrappers"
+
+  defaults = {
+    account_id = var.account_id
+  }
+
+  items = {
+    first  = { zone_id = var.zone_a }
+    second = { zone_id = var.zone_b }
+  }
+}
+```
 
 ---
 
-## CI
 
-Most workflows call the shared, actively maintained
-[clouddrove/github-shared-workflows](https://github.com/clouddrove/github-shared-workflows) at `@v2`, so the
-standard changes in one place for every repository.
+## 📦 Examples
 
-| Workflow | Source | Purpose |
-|----------|--------|---------|
-| `tf-checks` | shared | init and validate both examples |
-| `tflint` | shared | lint |
-| `checkov` | shared | policy scan |
-| `gitleaks` | shared | secret scan |
-| `pr_checks` | shared | Conventional Commit pull request title |
-| `auto_assignee` | shared | reviewer assignment |
-| `automerge` | shared | auto merge on green |
-| `stale_pr` | shared | stale handling |
-| `readme` | shared | rebuild README from README.yaml |
-| `tag-release` | shared | tag and changelog on merge |
-| `opentofu` | local | OpenTofu compatibility, no shared equivalent yet |
-| `test` | local | `terraform test` with mocked provider |
-| `integration` | local | live apply against a test account, scheduled only |
+> ⚠️ **Important:** Avoid using the `main` branch directly, as it may include unstable changes. Always use stable [release versions](https://github.com/terraform-cf-modules/terraform-module-template/releases).
 
-### Required organisation secrets
-
-| Secret | Used by |
-|--------|---------|
-| `GITHUB` | `tflint`, `tag-release`, `auto_assignee`, `automerge`, `readme` |
-| `SLACK_WEBHOOK_TERRAFORM` | `readme` |
-| `CLOUDFLARE_API_TOKEN` | `integration` |
-| `CLOUDFLARE_TEST_ACCOUNT_ID` | `integration` |
-| `CLOUDFLARE_TEST_ZONE_ID` | `integration` |
+Explore real-world usage scenarios and implementation patterns in the [`examples/`](./examples/) directory.
 
 ---
 
-## Inputs and outputs
 
-<!-- BEGIN_TF_DOCS -->
-<!-- END_TF_DOCS -->
+## 📥 Inputs and Outputs
+
+Detailed input variables and output values are documented for easier integration and day-to-day usage.
+
+📘 [View full documentation](docs/io.md)
 
 ---
 
-## License
 
-Apache 2.0. See [LICENSE](LICENSE).
+## 📝 Changelog
 
-Maintained by [CloudDrove](https://clouddrove.com) and [Cloud Wizz](https://github.com/cloud-wizz).
+Track module updates, improvements, and breaking changes across versions.
+
+📌 [View Changelog](CHANGELOG.md)
+
+---
+
+
+## ✨ Contributors
+
+Big thanks to our contributors for elevating our project with their dedication and expertise!
+
+<div align="center">
+  <a href="https://github.com/terraform-cf-modules/terraform-module-template/graphs/contributors" title="Contributors">
+    <img src="https://contrib.rocks/image?repo=terraform-cf-modules/terraform-module-template" />
+  </a>
+</div>
+
+All contributors must follow the [Conventional Commits](https://www.conventionalcommits.org) specification for commit messages.
+
+---
+
+
+## 🚀 Our Accomplishment
+
+We maintain Terraform modules across AWS, Azure, Google Cloud, DigitalOcean, Hetzner Cloud and Cloudflare 🙌.
+
+- [**Terraform Module Registry**](https://registry.terraform.io/namespaces/terraform-cf-modules): Discover our Cloudflare modules here.
+- [**Full module catalog**](https://github.com/clouddrove/toc): Every CloudDrove module and submodule, across every cloud.
+
+---
+
+## Notes
+
+- Do not use the `main` branch for production deployments.
+- Always reference a stable version using Git tags or official releases.
+- Using tagged versions ensures consistency, stability, and reproducible deployments.
+
+---
+
+## Feedback
+
+Report issues or request features on [GitHub](https://github.com/terraform-cf-modules/terraform-module-template/issues), or write to [business@clouddrove.com](mailto:business@clouddrove.com).
+
+## About us
+
+At [CloudDrove](https://clouddrove.com), we build reliable, secure and cost efficient cloud native solutions. Join our [Slack community](https://www.launchpass.com/devops-talks).
